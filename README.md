@@ -1,5 +1,4 @@
 # sleep_my_mac
-Przydatny
-
-Uspypiacz do maca - łatwe usypianie mac np. po filmie ;) 
-Muisz podać czas w sekunach
+Useful
+Mac sleeper - easy to put your Mac to sleep, e.g. after a movie ;)
+You must enter the time in seconds
