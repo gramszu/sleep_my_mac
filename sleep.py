@@ -1,62 +1,36 @@
-import subprocess
-import time
+import os
 import sys
-import argparse
-import tkinter as tk
-from tkinter import messagebox
+import time
 
-def sleep_mac(seconds):
-    global running
-    running = True
-    for i in range(seconds, 0, -1):
-        if not running:
-            break
-        label.config(text=f"Time to sleep: {i} sec(y).")
-        root.update()
+def main():
+    # Sprawdzenie, czy podano argument w linii poleceń
+    if len(sys.argv) != 2:
+        print("Użycie: python sleep_timer.py <czas w minutach>")
+        sys.exit(1)
+
+    try:
+        # Pobranie czasu z argumentu i przeliczenie na sekundy
+        sleep_time_minutes = int(sys.argv[1])
+        if sleep_time_minutes <= 0:
+            raise ValueError
+        sleep_time_seconds = sleep_time_minutes * 60
+    except ValueError:
+        print("Podaj prawidłową wartość czasu (liczba dodatnia).")
+        sys.exit(1)
+
+    print(f"MacBook uśpi się za {sleep_time_minutes} minut.")
+
+    # Odliczanie
+    for remaining_seconds in range(sleep_time_seconds, 0, -1):
+        minutes = remaining_seconds // 60
+        seconds = remaining_seconds % 60
+        sys.stdout.write(f"\rCzas do uśpienia: {minutes} minut {seconds} sekund")
+        sys.stdout.flush()
         time.sleep(1)
 
-    if running:
-        label.config(text="Sleep Mac")
-        root.update()
-        subprocess.run(["pmset", "sleepnow"])
+    # Usypianie MacBooka
+    print("\nUsypianie MacBooka...")
+    os.system("pmset sleepnow")
 
-def start_sleep():
-    global running
-    if not running:
-        czas_sekundy = int(entry.get())
-        running = True
-        sleep_mac(czas_sekundy)
-
-def stop_sleep():
-    global running
-    running = False
-    label.config(text="")
-
-def show_about():
-    messagebox.showinfo("About", "Sleep Mac \nV1.0\nAutor: Robert Gramsz \nwww.megaelektronik.pl")
-
-root = tk.Tk()
-root.title("Sleep Mac")
-root.geometry("300x250")
-
-entry_label = tk.Label(root, text="Enter time [s]:")
-entry_label.pack(pady=10)
-
-entry = tk.Entry(root, width=10)
-entry.pack()
-
-start_button = tk.Button(root, text="Start", command=start_sleep, bg="blue")
-start_button.pack(pady=5)
-
-stop_button = tk.Button(root, text="Stop", command=stop_sleep)
-stop_button.pack(pady=5)
-
-about_button = tk.Button(root, text="About", command=show_about)
-about_button.pack(pady=5)
-
-label = tk.Label(root, text="")
-label.pack(pady=10)
-
-running = False
-
-root.mainloop()
+if __name__ == "__main__":
+    main()
